@@ -3,8 +3,8 @@
 The repository for the [ZTM udemy course](https://www.udemy.com/course/complete-sql-databases-bootcamp-zero-to-mastery) covering the complete SQL bootcamp.
 
 - Section 2 - [History & story of data](https://github.com/irisida/data_engineering/blob/master/complete_sql_bootcamp/section02/section02.md)
-- Section 3 - DB & SQL fundamentals
-- Section 4 - Environments
+- Section 3 - [DB & SQL fundamentals](https://github.com/irisida/data_engineering/blob/master/complete_sql_bootcamp/section03/section03.md)
+- Section 4 - [Environments](https://github.com/irisida/data_engineering/blob/master/complete_sql_bootcamp/section04/readme.md)
 - Section 5 - SQL Deep dive
 - Section 6 - Advanced SQL
 - Section 7 - DB Management
