@@ -58,3 +58,11 @@ select * from customers
 where gender = 'F'
 AND not (state = 'NY' OR state = 'OR')
 ```
+
+```sql
+-- demonstrates conditions an using `in` statement
+select * from customers
+where (age < 30 OR age >= 50)
+AND income > 50000
+and country IN ('Japan', 'Australia')
+```
