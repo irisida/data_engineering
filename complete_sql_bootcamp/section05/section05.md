@@ -66,3 +66,5 @@ where (age < 30 OR age >= 50)
 AND income > 50000
 and country IN ('Japan', 'Australia')
 ```
+
+### Null values and null coalescing
