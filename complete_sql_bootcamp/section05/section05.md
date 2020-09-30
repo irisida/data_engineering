@@ -27,6 +27,7 @@
 - function types:
     - aggregate: aggregate data and produce one value, sums, avg etc...
     - scalar: run against each row (multiple outputs)
+    - Importance of filtering with `WHERE`, `AND` and `OR`
 
 ### Sample queries
 
@@ -38,7 +39,22 @@ and last_name = 'Schueller'
 ```
 
 ```sql
+-- demonstrate the linked tables
 select * from employees, salaries
 where salaries.emp_no = employees.emp_no
 and employees.emp_no = 10001
+```
+
+```sql
+-- demonstrate conditional filtering
+select * from customers
+where gender = 'F'
+AND (state = 'NY' OR state = 'OR')
+```
+
+```sql
+-- using not to negate conditionals
+select * from customers
+where gender = 'F'
+AND not (state = 'NY' OR state = 'OR')
 ```
