@@ -1,0 +1,25 @@
+# Python for DS & ML bootcamp
+
+- Section 04 - Python crash course (skipped as extensively covered in python language repo)
+- Section 05 - Numpy Introduction
+- Section 06 - Pandas Introduction
+- Section 07 - Pandas continued
+- Section 08 - Data visualization with matplotlib
+- Section 09 - Data visualization with seaborn
+- Section 10 - Data visualization with pandfas built-in visualization
+- Section 11 - Data visualization with plotly & cufflinks
+- Section 12 - Data visualization with Gepgraphical plotting
+- Section 13 - capstone
+- Section 14 - Introduction to ML
+- Section 15 - Linear Regression
+- Section 16 - Cross validation & bias-variance trade-off
+- Section 17 - Logisitic regression
+- Section 18 - KNN - K Nearest Neighbours
+- Section 19 - Decision tress and random forest
+- Section 20 - SVM Support vector machines
+- Section 21 - K means clustering
+- Section 22 - Principal component analysis
+- Section 23 - recommemder systems
+- Section 24 - NLP
+- Section 25 - Neural nets & Deep learning
+- Section 26 - Big data & spark with Python
