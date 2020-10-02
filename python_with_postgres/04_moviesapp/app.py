@@ -1,5 +1,4 @@
 import datetime
-from os import ttyname
 import database
 
 database.create_schema()
