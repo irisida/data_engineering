@@ -55,8 +55,8 @@ def watch_movie(viewer, title):
         connection.execute(DB_ADD_WATCHED, (viewer, title))
 
 
-def get_watched_movies():
+def get_watched_movies(username):
     with connection:
         cursor = connection.cursor()
-        cursor.execute(DB_GET_WATCHED_MOVIES)
+        cursor.execute(DB_GET_WATCHED_MOVIES, (username,))
         return cursor.fetchall()

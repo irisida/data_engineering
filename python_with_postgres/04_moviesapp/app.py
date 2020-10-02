@@ -27,6 +27,12 @@ def print_movies_list(header, movies):
     print("")
 
 
+def print_watched_list(username, movies):
+    print(f"-- {username}'s watched movies --")
+    for movie in movies:
+        print(movie[1])
+
+
 menu = """
 1) Add new movie
 2) View upcoming movies
@@ -55,7 +61,9 @@ while (user_input := input(menu)) != "x":
         prompt_watched_movie()
 
     elif user_input == "5":
-        pass
+        username = input("username: ")
+        movies = database.get_watched_movies(username)
+        print_watched_list(username, movies)
 
     else:
         print("Invaid input. Please try again.")
