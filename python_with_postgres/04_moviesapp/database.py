@@ -4,31 +4,30 @@ from sqlite3.dbapi2 import Cursor
 
 connection = sqlite3.connect("data.db")
 
+# DDLs
+DB_CREATE_MOVIES = (
+    "CREATE TABLE IF NOT EXISTS movies (title TEXT, release_timestamp REAL);"
+)
+DB_CREATE_WATCHED = "CREATE TABLE IF NOT EXISTS watched (viewer TEXT, title TEXT);"
 
-DB_CREATE_SCHEMA = """CREATE TABLE IF NOT EXISTS movies (
-    title TEXT,
-    release_timestamp REAL,
-    watched INTEGER
-);"""
+# mutations
+DB_ADD_MOVIE = "INSERT INTO movies (title, release_timestamp) VALUES (?,?);"
+DB_ADD_WATCHED = "INSERT INTO watched (viewer, title) VALUES (?,?);"
+DB_DELETE_MOVIE = "DELETE FROM movies WHERE title = ?;"
 
-DB_ADD_MOVIE = "INSERT INTO movies (title, release_timestamp, watched) VALUES (?,?,0);"
 
-DB_GET_ALL_MOVIES = "SELECT title, release_timestamp, watched FROM movies;"
-
+# Queries
+DB_GET_ALL_MOVIES = "SELECT title, release_timestamp FROM movies;"
 DB_GET_UPCOMING_MOVIES = (
     "SELECT title, release_timestamp, watched FROM movies WHERE release_timestamp > ?;"
 )
-
-DB_GET_WATCHED_MOVIES = (
-    "SELECT title, release_timestamp, watched FROM movies WHERE watched = 1;"
-)
-
-DB_SET_MOVIE_AS_WATCHED = "UPDATE movies SET watched = 1 WHERE title = ?;"
+DB_GET_WATCHED_MOVIES = "SELECT * FROM watched WHERE viewer = ?;"
 
 
 def create_schema():
     with connection:
-        connection.execute(DB_CREATE_SCHEMA)
+        connection.execute(DB_CREATE_MOVIES)
+        connection.execute(DB_CREATE_WATCHED)
 
 
 def add_movie(title, release_timestamp):
@@ -50,9 +49,10 @@ def get_movies(upcoming=False):
         return cursor.fetchall()
 
 
-def watch_movie(title):
+def watch_movie(viewer, title):
     with connection:
-        connection.execute(DB_SET_MOVIE_AS_WATCHED, (title,))
+        connection.execute(DB_DELETE_MOVIE, (title,))
+        connection.execute(DB_ADD_WATCHED, (viewer, title))
 
 
 def get_watched_movies():
