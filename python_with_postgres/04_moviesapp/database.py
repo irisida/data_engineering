@@ -17,6 +17,12 @@ CREATE TABLE IF NOT EXISTS watched (
     FOREIGN KEY (movie_id) REFERENCES movies(id));
 """
 
+# indexes
+DB_CREATE_MOVIES_INDEX = (
+    "CREATE INDEX IF NOT EXISTS idx_movies_release ON movies (release_timestamp);"
+)
+
+
 # mutations
 DB_ADD_MOVIE = "INSERT INTO movies (title, release_timestamp) VALUES (?,?);"
 DB_ADD_USER = "INSERT INTO users (username) VALUES (?)"
