@@ -55,3 +55,12 @@ WHERE polls.id = (SELECT * FROM latest_id);
 - group by rules:
     - You keep the coluns you groupded on, but reduced to single data points. losing access to other columns
     - aggregate functions on every column
+
+### Window functions
+- `OVER()` allows programmer to perform operations on columns featured in a group by as a whole. Effectively it is treated like a separate query and runs on a window of the data in operation. All other aggregators will run in a query run cycle before the OVER() is applied.
+- `RANK()` rank added to the query would effectively be operating only upo the current row therefore requires the OVER() window to be created. With rank we require the column to base ranking on otherwise it will apply the base ranking to all and we will normally see each row have a ranking of 1.
+- `DENSE_RANK()` the dense version doesn't skip a rank where a duplicate, multi-participant rank is achieved.
+- in a multi-ranking situation we can use `PARTITION` and supply the column we want to divide rankings by.
+- `DISTINCT ON` option to return the first of each grouped option.
+- simple view - runs the underlying query to generate a table
+- materialized view - does not re-run each time, is persisted and has to be called to refresh to update.
