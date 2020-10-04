@@ -13,7 +13,7 @@ MENU_PROMPT = """-- Menu --
 3) Vote on a poll
 4) Show poll votes
 5) Select a random winner from a poll option
-6) Exit
+x) Exit
 
 Enter your choice: """
 NEW_OPTION_PROMPT = "Enter new option text (or leave empty to stop adding options): "

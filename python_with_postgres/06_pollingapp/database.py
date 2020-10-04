@@ -74,7 +74,8 @@ def get_random_poll_vote(connection, option_id):
 # To minimise the boilerplate code we also make use
 # of the psycopg2.extra.execute_values function to
 # iterate the insert over the options that were
-# put into the list comprehension.
+# put into the list comprehension from the text and
+# poll id related.
 def create_poll(connection, title, owner, options):
     with connection:
         with connection.cursor() as cursor:
