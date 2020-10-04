@@ -21,6 +21,8 @@
 
 
 # SQL Notes
+
+### Keywords
 - Within SQL statements in postgres we can use the `RETURNING` keyword to negate the need for follow up queries in a transaction to see rows that are inserted or updated.
 - Use of nested queries should avoid a semi-colon on the inner query to avoid undesired side effects.
 - Nested queries can be used as:
@@ -38,4 +40,18 @@ SELECT * FROM polls
 JOIN options ON polls.id = options.poll_id
 WHERE polls.id = (SELECT * FROM latest_id);
 ```
--
+- Postgres has typical math functions bundled:
+    - `RANDOM` for random value between 0.0 & 1.0
+    - `abs(x)` to get the absolute value of x
+    - `mod(y, x)` gives the remainder of y/x
+    - loads more....
+
+
+### Aggregation
+- `count(expr)` is an aggregate function and takes an expression. So we typically pass a query to be evaluated (expression) and the count is the number of rows returned by evaluating that expression.
+- `avg(expr)` return the average of the results returned by the expression.
+- `max(expr)` & `min(expr)` give the max and min respectively.
+- again, there are loads more in the documentation.
+- group by rules:
+    - You keep the coluns you groupded on, but reduced to single data points. losing access to other columns
+    - aggregate functions on every column

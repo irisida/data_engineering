@@ -21,6 +21,21 @@ WHERE polls.id = (
     SELECT id from polls ORDER BY id DESC LIMIT 1
 )
 """
+SELECT_POLL_VOTE_DETAILS = """
+SELECT
+  options.id,
+  options.option_text,
+  COUNT(votes.option_id) as vote_count,
+  COUNT(votes.option_id) / SUM(COUNT(votes.option_id)) OVER() * 100.0 AS Percentage
+FROM options
+LEFT JOIN votes on options.id = votes.option_id
+WHERE options.poll_id = %s
+GROUP BY options.id
+"""
+
+SELECT_RANDOM_VOTE = (
+    "SELECT * FROM votes WHERE option_id = %s ORDER BY RANDOM() LIMIT 1"
+)
 
 INSERT_POLL = "INSERT INTO polls (title, owner_username) VALUES (%s, %s) RETURNING id"
 INSERT_OPTION = "INSERT INTO options (option_text, poll_id) VALUES %s;"
@@ -59,13 +74,15 @@ def get_poll_details(connection, poll_id):
 def get_poll_and_vote_results(connection, poll_id):
     with connection:
         with connection.cursor() as cursor:
-            pass
+            cursor.execute(SELECT_POLL_VOTE_DETAILS, (poll_id,))
+            return cursor.fetchall()
 
 
 def get_random_poll_vote(connection, option_id):
     with connection:
         with connection.cursor() as cursor:
-            pass
+            cursor.execute(SELECT_RANDOM_VOTE, (option_id,))
+            return cursor.fetchone()
 
 
 # Makes use of the returning SQL keyword in order
