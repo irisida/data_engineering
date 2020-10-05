@@ -27,7 +27,7 @@ def prompt_create_poll():
     poll = Poll(poll_title, poll_owner)
     poll.save()
 
-    while (new_option := input(NEW_OPTION_PROMPT)) :
+    while new_option := input(NEW_OPTION_PROMPT):
         poll.add_option(new_option)
 
 
@@ -52,7 +52,7 @@ def _print_poll_options(options: List[Option]):
 def show_poll_votes():
     poll_id = int(input("Enter poll you would like to see votes for: "))
     options = Poll.get(poll_id).options
-    votes_per_option = [len(Option.votes) for option in options]
+    votes_per_option = [len(option.votes) for option in options]
     total_votes = sum(votes_per_option)
 
     try:

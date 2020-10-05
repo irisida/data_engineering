@@ -95,7 +95,7 @@ def add_option(connection, option_text: str, poll_id: int):
 
 
 # VOTES
-def get_votes_fot_option(connection, option_id: int) -> List[Vote]:
+def get_votes_for_option(connection, option_id: int) -> List[Vote]:
     pass
 
 
