@@ -4,10 +4,10 @@ import random
 import database
 from models.option import Option
 from models.poll import Poll
-from connections import create_connection
+from connection_pool import get_connection
 
 
-DATABASE_PROMPT = "Enter the DATABASE_URI value or leave empty to load from .env file: "
+
 MENU_PROMPT = """-- Menu --
 
 1) Create new poll
@@ -22,9 +22,9 @@ NEW_OPTION_PROMPT = "Enter new option text (or leave empty to stop adding option
 
 
 def prompt_create_poll():
-    poll_title = input("Enter poll title: ")
-    poll_owner = input("Enter poll owner: ")
-    poll = Poll(poll_title, poll_owner)
+    title = input("Enter poll title: ")
+    owner = input("Enter poll owner: ")
+    poll = Poll(title, owner)
     poll.save()
 
     while new_option := input(NEW_OPTION_PROMPT):
@@ -51,12 +51,13 @@ def _print_poll_options(options: List[Option]):
 
 def show_poll_votes():
     poll_id = int(input("Enter poll you would like to see votes for: "))
-    options = Poll.get(poll_id).options
+    poll = Poll.get(poll_id)
+    options = poll.options
     votes_per_option = [len(option.votes) for option in options]
     total_votes = sum(votes_per_option)
 
     try:
-        for Option, votes in zip(options, votes_per_option):
+        for option, votes in zip(options, votes_per_option):
             percentage = votes / total_votes * 100.0
             print(f"{Option.text} got {votes} votes ({percentage:.2f}% of total)")
     except ZeroDivisionError:
@@ -87,14 +88,14 @@ MENU_OPTIONS = {
 
 
 def menu():
-    connection = create_connection()
-    database.create_tables(connection)
+    with get_connection() as connection:
+        database.create_tables(connection)
 
-    while (selection := input(MENU_PROMPT)) != "x":
-        try:
-            MENU_OPTIONS[selection]()
-        except KeyError:
-            print("Invalid input selected. Please try again.")
+        while (selection := input(MENU_PROMPT)) != "x":
+            try:
+                MENU_OPTIONS[selection]()
+            except KeyError:
+                print("Invalid input selected. Please try again.")
 
 
 menu()
