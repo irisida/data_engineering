@@ -1,19 +1,15 @@
 from contextlib import contextmanager
 from typing import List, Tuple
-from psycopg2.extras import execute_values
+
 
 Poll = Tuple[int, str, str]
 Option = Tuple[int, str, int]
 Vote = Tuple[str, int]
 
-CREATE_POLLS = """CREATE TABLE IF NOT EXISTS polls
-(id SERIAL PRIMARY KEY, title TEXT, owner_username TEXT);"""
 
-CREATE_OPTIONS = """CREATE TABLE IF NOT EXISTS options
-(id SERIAL PRIMARY KEY, option_text TEXT, poll_id INTEGER, FOREIGN KEY(poll_id) REFERENCES options (id));"""
-
-CREATE_VOTES = """CREATE TABLE IF NOT EXISTS votes
-(username TEXT, option_id INTEGER, FOREIGN KEY(option_id) REFERENCES options(id));"""
+CREATE_POLLS = "CREATE TABLE IF NOT EXISTS polls(id SERIAL PRIMARY KEY, title TEXT, owner_username TEXT);"
+CREATE_OPTIONS = "CREATE TABLE IF NOT EXISTS options(id SERIAL PRIMARY KEY, option_text TEXT, poll_id INTEGER, FOREIGN KEY(poll_id) REFERENCES options (id));"
+CREATE_VOTES = "CREATE TABLE IF NOT EXISTS votes(username TEXT, option_id INTEGER, vote_timestamp INTEGER, FOREIGN KEY(option_id) REFERENCES options(id));"
 
 SELECT_POLL = "SELECT * FROM polls WHERE id = %s;"
 SELECT_ALL_POLLS = "SELECT * FROM polls;"
@@ -27,11 +23,15 @@ WHERE polls.id = (
 SELECT_OPTION = "SELECT * FROM options WHERE id = %s"
 SELECT_VOTES_FOR_OPTION = "SELECT * FROM votes WHERE option_id = %s"
 
-INSERT_POLL = "INSERT INTO polls (title, owner_username) VALUES (%s, %s) RETURNING id"
+INSERT_POLL_RETURN_ID = (
+    "INSERT INTO polls (title, owner_username) VALUES (%s, %s) RETURNING id"
+)
 INSERT_OPTION_RETURNING_ID = (
     "INSERT INTO options (option_text, poll_id) VALUES (%s, %s) RETURNING id;"
 )
-INSERT_VOTE = "INSERT INTO votes (username, option_id) VALUES (%s, %s);"
+INSERT_VOTE = (
+    "INSERT INTO votes (username, option_id, vote_timestamp) VALUES (%s, %s, %s);"
+)
 
 
 @contextmanager
@@ -51,7 +51,7 @@ def create_tables(connection):
 # POLLS
 def create_poll(connection, title: str, owner: str):
     with get_cursor(connection) as cursor:
-        cursor.execute(INSERT_POLL, (title, owner))
+        cursor.execute(INSERT_POLL_RETURN_ID, (title, owner))
         poll_id = cursor.fetchone()[0]
         return poll_id
 
@@ -84,6 +84,7 @@ def get_poll_options(connection, poll_id: int) -> List[Option]:
 def get_option(connection, option_id: int) -> Option:
     with get_cursor(connection) as cursor:
         cursor.execute(SELECT_OPTION, (option_id,))
+        return cursor.fetchone()
 
 
 def add_option(connection, option_text: str, poll_id: int):
@@ -95,9 +96,12 @@ def add_option(connection, option_text: str, poll_id: int):
 
 # VOTES
 def get_votes_for_option(connection, option_id: int) -> List[Vote]:
-    pass
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(SELECT_VOTES_FOR_OPTION, (option_id,))
+            return cursor.fetchall()
 
 
-def add_poll_vote(connection, username: str, option_id: int):
+def add_poll_vote(connection, username: str, vote_timestamp: float, option_id: int):
     with get_cursor(connection) as cursor:
-        cursor.execute(INSERT_VOTE, (username, option_id))
+        cursor.execute(INSERT_VOTE, (username, option_id, vote_timestamp))

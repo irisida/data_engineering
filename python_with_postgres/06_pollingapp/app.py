@@ -1,11 +1,12 @@
 from typing import List
-
 import random
+import datetime
+import pytz
+
 import database
 from models.option import Option
 from models.poll import Poll
 from connection_pool import get_connection
-
 
 
 MENU_PROMPT = """-- Menu --
@@ -59,9 +60,25 @@ def show_poll_votes():
     try:
         for option, votes in zip(options, votes_per_option):
             percentage = votes / total_votes * 100.0
-            print(f"{Option.text} got {votes} votes ({percentage:.2f}% of total)")
+            print(f"{option.text} got {votes} votes ({percentage:.2f}% of total)")
     except ZeroDivisionError:
         print("No votes cast for this poll")
+
+    vote_log = input("Would you like to see the vote logs? (y/N) ")
+    if vote_log.lower() == "y":
+        _print_votes_for_options(options)
+
+
+def _print_votes_for_options(options: List[Option]):
+    for option in options:
+        print(f"Option: {option.text}")
+        for vote in option.votes:
+            naive_datetime = datetime.datetime.utcfromtimestamp(vote[2])
+            utc_date = pytz.utc.localize(naive_datetime)
+            local_date = utc_date.astimezone(pytz.timezone("Europe/London")).strftime(
+                "%Y-%m-%d %H:%m"
+            )
+            print(f"\t - {vote[0]} on {local_date}")
 
 
 def randomize_poll_winner():
